@@ -89,14 +89,74 @@ async function main(){
                         }
                         
                     } catch {
-
-                        console.log("Operation Failed");
+                        
                     }
                     askQuestion(currentDir);
                 }
                 
             } else if (ans.split(" ")[0] == "json-to-csv"){
-                
+                try {
+                    ans = ans.slice(11).trim().split(" ");
+
+                    let trimedArray = [];
+                    
+                    for (let component of ans){
+
+                        if (component.trim() != ""){
+
+                            trimedArray.push(component);
+                        }
+                    }
+                    ans = trimedArray;
+
+                    let input = "";
+                    let output = "";
+
+                    if (ans.length == 4){
+                        if (ans[0] == "--input"){
+                            input = ans[1];
+                        } else {
+                            throw new Error();
+                        }
+                        if (ans[2] == "--output"){
+                            output = ans[3];
+                        } else {
+                            throw new Error();
+                        }
+                        
+                    } else {
+                        throw new Error()
+                    }
+                    console.log(input, output);
+
+                    await fs.access(input);
+
+                    const results = await fs.readFile(input);
+                    const contents = JSON.parse(results);
+
+                    let newCSVFile = "";
+
+                    for (let entry in contents[0]){
+                        newCSVFile += entry + ",";
+                    }
+
+                    newCSVFile = newCSVFile.slice(0, newCSVFile.length - 1) + "\n";
+
+                    for (let obj of contents){
+                        for (let entry in obj){
+                            newCSVFile += obj[entry] + ",";
+                        }
+                        newCSVFile = newCSVFile.slice(0, newCSVFile.length - 1) + "\n";
+                    }
+
+                    newCSVFile = newCSVFile.slice(0, newCSVFile.length - 1);
+
+                    await fs.writeFile(output, newCSVFile);
+                    
+                } catch {
+                    console.log("Operation Failed");
+                }
+                askQuestion(currentDir);
             } else {
                 console.log("Unknown Command");
 
