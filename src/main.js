@@ -42,14 +42,48 @@ async function main(){
 
                     currentDir = pa.join(currentDir, ans);
                 } catch {
-
-                    console.log("Operation Failed")
+                    console.log("Operation Failed");
                 } 
 
                 askQuestion(currentDir);
 
-            } else {
+            } else if (ans.trim().split(" ")[0] == "csv-to-json"){
+                ans = ans.slice(11).trim().split(" ");
+                let trimedArray = [];
+                for (let component of ans){
+                    if (component.trim() != ""){
+                        trimedArray.push(component);
+                    }
+                }
+                ans = trimedArray;
+                if (ans[0] == "--input"){
+                    try {
 
+                        let data = (await fs.readFile(ans[1])).toString();
+                        let output = {};
+
+                        data = data.split("\n");
+
+                        data = data.map(str => str.split(","));
+
+                        for (let obj of data[0]){
+
+                            if (obj.slice(obj.length - 1) === "\r"){
+                                obj = obj.slice(0, obj.length - 1);
+                            }
+
+                            output[obj] = [];
+                        }
+
+                        console.log(output);
+                    } catch {
+                        
+                        console.log("Operation Failed");
+                    }
+                    askQuestion(currentDir);
+                }
+                
+            } else {
                 console.log("Unknown Command");
 
                 askQuestion(currentDir);
