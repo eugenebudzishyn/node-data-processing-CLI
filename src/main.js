@@ -5,10 +5,15 @@ import pa from "path"
 
 async function main(){
     const rl = readline.createInterface(process.stdin, process.stdout);
+
     console.log("Welcome to Data Processing CLI!");
+
     let currentDir = await fs.realpath(".");
+
     async function askQuestion(currentDir){
+
         console.log(`You are currently in ${currentDir}`);
+        
         rl.question("> ", async (ans) => {
 
             if (ans == ".exit"){
@@ -16,12 +21,14 @@ async function main(){
                 console.log("Thank you for using Data Processing CLI!");
 
             } else if (ans == "up"){
-                let arrayOfFiles = currentDir.split(pa.sep);
-                console.log(arrayOfFiles);
-                currentDir = pa.join(...arrayOfFiles, "..");
+                let arrayOfFiles = pa.parse(currentDir);
+
+                currentDir = arrayOfFiles.dir;
+
                 askQuestion(currentDir);
             } else if (ans == "ls"){
                 const fileList = await fs.readdir(currentDir);
+
                 for (let file of fileList){
                     console.log(file);
                 }
@@ -32,14 +39,19 @@ async function main(){
                 try {
                     await fs.access(pa.join(currentDir, ans));
                     await fs.readdir(currentDir);
+
                     currentDir = pa.join(currentDir, ans);
                 } catch {
+
                     console.log("Operation Failed")
                 } 
+
                 askQuestion(currentDir);
 
             } else {
+
                 console.log("Unknown Command");
+
                 askQuestion(currentDir);
             }
             
