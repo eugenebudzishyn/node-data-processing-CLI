@@ -17,7 +17,7 @@ async function main(){
 
             } else if (ans == "up"){
                 let arrayOfFiles = currentDir.split(pa.sep);
-                
+                console.log(arrayOfFiles);
                 currentDir = pa.join(...arrayOfFiles, "..");
                 askQuestion(currentDir);
             } else if (ans == "ls"){
