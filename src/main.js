@@ -14,9 +14,10 @@ async function main(){
     async function askQuestion(currentDir){
 
         console.log(`You are currently in ${currentDir}`);
-        
+
         rl.question("> ", async (ans) => {
             ans = ans.trim();
+
             if (ans == ".exit"){
                 rl.close();
                 console.log("Thank you for using Data Processing CLI!");
@@ -49,7 +50,7 @@ async function main(){
                 askQuestion(currentDir);
 
             } else if (ans.split(" ")[0] == "csv-to-json"){
-                ans = ans.slice(11).trim().split(" ");
+                ans = ans.slice(11).split(" ");
                 let trimedArray = [];
                 for (let component of ans){
                     if (component.trim() != ""){
@@ -96,7 +97,7 @@ async function main(){
                 
             } else if (ans.split(" ")[0] == "json-to-csv"){
                 try {
-                    ans = ans.slice(11).trim().split(" ");
+                    ans = ans.slice(11).split(" ");
 
                     let trimedArray = [];
                     
@@ -153,6 +154,43 @@ async function main(){
 
                     await fs.writeFile(output, newCSVFile);
                     
+                } catch {
+                    console.log("Operation Failed");
+                }
+                askQuestion(currentDir);
+            } else if (ans.slice(0, 5) == "count"){
+                ans = ans.slice(5).split(" ");
+                let trimedArray = [];
+                for (let component of ans){
+                    if (component.trim() != ""){
+                        trimedArray.push(component);
+                    }
+                }
+                ans = trimedArray;
+                try {
+                    let inputFile = "";
+                    if (ans[0] == "--input"){
+                        inputFile = ans[1];
+                    } else {
+                        throw new Error();
+                    }
+                    console.log("got to here");
+                    // let File = await fs.readFile(inputFile);
+                    const parameters = await fs.stat(inputFile);
+                    
+                    const File = (await fs.readFile(inputFile)).toString().split("\n");
+
+                    const size = parameters.size;
+
+                    const amountOfLines = File.length;
+
+                    let wordCounter = 0;
+
+                    for (let line of File){
+                        wordCounter += line.split(" ").length;
+                    }
+
+                    console.log(`Lines: ${amountOfLines}\nWords: ${wordCounter}\nCharacters: ${size}`);
                 } catch {
                     console.log("Operation Failed");
                 }
