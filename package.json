@@ -1,0 +1,24 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "description": "secondTaskPackage",
+  "keywords": [
+    "secondTaskPackage"
+  ],
+  "homepage": "https://github.com/eugenebudzishyn/node-data-processing-CLI#readme",
+  "bugs": {
+    "url": "https://github.com/eugenebudzishyn/node-data-processing-CLI/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eugenebudzishyn/node-data-processing-CLI.git"
+  },
+  "license": "ISC",
+  "author": "Eugene",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/main.js"
+  }
+}
