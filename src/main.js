@@ -195,7 +195,46 @@ async function main(){
                     console.log("Operation Failed");
                 }
                 askQuestion(currentDir);
-            } else if (ans.slice(0, 4) == "hash"){
+            } else if (ans.slice(0,12) == "hash-compare"){
+                console.log("Got to here");
+                ans = ans.slice(12).split(" ");
+                let trimedArray = [];
+                for (let component of ans){
+                    if (component.trim() != ""){
+                        trimedArray.push(component);
+                    }
+                }
+
+                ans = trimedArray;
+
+                let input = "";
+
+                let inputHash = "";
+
+                let algorithm = "sha256";
+                try{
+                    for (let i = 0; i < ans.length; i+=2){
+                        if (ans[i] == "--input"){
+                            input = ans[i+1];
+                        } else if (ans[i] == "--hash"){
+                            inputHash = ans[i+1];
+                        } else if (ans[i] == "--algorithm"){
+                            algorithm = ans[i+1];
+                        }
+                    }
+
+                    const stringFile = (await fs.readFile(input)).toString();
+
+                    const hash = crypto.createHash(algorithm).update(stringFile).digest("hex");
+
+                    console.log(`${hash == (await fs.readFile(inputHash)).toString() ? "OK" : "MISMATCH"}`);
+
+                } catch {
+                    console.log("Operation Failed");
+                }
+
+                askQuestion(currentDir);
+            }else if (ans.slice(0, 4) == "hash"){
                 ans = ans.slice(4).split(" ");
                 let trimedArray = [];
                 for (let component of ans){
@@ -210,15 +249,13 @@ async function main(){
 
                 let algorithm = "sha256";
 
-                const allowedAlgorithms = {"md5": "md5", "sha256": "sha256", "sha512": "sha512"};
-
                 let input = "";
 
                 try {
                     for (let i = 0; i < ans.length; i+=2){
                         if (ans[i] == "--input"){
                             input = ans[i+1];
-                        } else if (ans[i] == "save"){
+                        } else if (ans[i] == "--save"){
                             save = true;
                         } else if (ans[i] == "--algorithm"){
                             algorithm = ans[i+1];
@@ -242,7 +279,7 @@ async function main(){
                 }
                 
                 askQuestion(currentDir);
-            } else {
+            }else {
                 console.log("Unknown Command");
 
                 askQuestion(currentDir);
