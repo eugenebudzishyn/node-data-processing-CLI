@@ -195,6 +195,53 @@ async function main(){
                     console.log("Operation Failed");
                 }
                 askQuestion(currentDir);
+            } else if (ans.slice(0, 4) == "hash"){
+                ans = ans.slice(4).split(" ");
+                let trimedArray = [];
+                for (let component of ans){
+                    if (component.trim() != ""){
+                        trimedArray.push(component);
+                    }
+                }
+
+                ans = trimedArray;
+                
+                let save = false;
+
+                let algorithm = "sha256";
+
+                const allowedAlgorithms = {"md5": "md5", "sha256": "sha256", "sha512": "sha512"};
+
+                let input = "";
+
+                try {
+                    for (let i = 0; i < ans.length; i+=2){
+                        if (ans[i] == "--input"){
+                            input = ans[i+1];
+                        } else if (ans[i] == "save"){
+                            save = true;
+                        } else if (ans[i] == "--algorithm"){
+                            algorithm = ans[i+1];
+                        }
+                    }
+                    if (input == ""){
+                        throw new Error();
+                    }
+
+                    const stringFile = (await fs.readFile(input)).toString();
+
+                    const hash = crypto.createHash(algorithm).update(stringFile).digest("hex");
+
+                    if (save){
+                        await fs.writeFile("hash.txt", hash);
+                    } else {
+                        console.log(hash);
+                    }
+                } catch {
+                    console.log("Operation Failed");
+                }
+                
+                askQuestion(currentDir);
             } else {
                 console.log("Unknown Command");
 
